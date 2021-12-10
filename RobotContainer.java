@@ -8,6 +8,8 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.subsystems.DriveTrain;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -18,12 +20,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   
-
+  
+  public static DriveTrain driveTrain = new DriveTrain();
+  public static OI m_OI;
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the button bindings
     configureButtonBindings();
+    driveTrain.setDefaultCommand(
+      // A split-stick arcade command, with forward/backward controlled by the left
+      // hand, and turning controlled by the right.
+      new RunCommand(
+          () ->
+              driveTrain.drive(
+                  m_OI.getJoystickRawAxis(0), m_OI.getJoystickRawAxis(2))
+          ));
   }
+
 
   /**
    * Use this method to define your button->command mappings. Buttons can be created by
