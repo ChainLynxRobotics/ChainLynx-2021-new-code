@@ -12,4 +12,28 @@ package frc.robot;
  * <p>It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
-public final class Constants {}
+public final class Constants {
+   public static final class RobotMap{
+        
+    
+        //these ID's are accurate to the old robot, not the 2022 robot
+
+        public static final int MOTOR_LEFT_MASTER_ID = 1;
+        public static final int MOTOR_LEFT_SLAVE_ID = 2;
+        public static final int MOTOR_RIGHT_MASTER_ID = 4;
+        public static final int MOTOR_RIGHT_SLAVE_ID = 3;
+        // joystick port, may change if there is a mouse or something plugged in, be careful about that
+        public static final int JOYSTICK_PORT = 0;
+
+
+
+
+
+   } 
+
+
+
+
+
+
+}
