@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.SimulationConstants;
+
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
@@ -30,6 +32,7 @@ public class DriveTrain extends SubsystemBase {
   private DifferentialDrive m_drive;
   
   
+
   
   public DriveTrain() {
     
@@ -67,7 +70,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
 
-   
+
 
       @Override
       public void simulationPeriodic() {
@@ -90,7 +93,8 @@ public class DriveTrain extends SubsystemBase {
 
 
 
-  
+
+
   
   @Override
   public void periodic() {
@@ -109,5 +113,9 @@ public class DriveTrain extends SubsystemBase {
   public double getDrawnCurrentAmps() {
     return m_drivetrainSimulator.getCurrentDrawAmps();
 
+  }
+
+  public void drive(double throttle, double turn) {
+    m_drive.arcadeDrive(throttle, turn, true);
   }
 }
