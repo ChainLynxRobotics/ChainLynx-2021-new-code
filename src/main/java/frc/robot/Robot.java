@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
   // the subsystems are declared here, and not in robotInit as you would assume to workaround the 
   //fact that simulation periodic actucally runs BEFORE robotInit 
   //so i had to declare them here to avoid a null pointer error
-  public static DriveTrain driveTrain = new DriveTrain();;
+  public static DriveTrain driveTrain = new DriveTrain();
   public static OI m_OI = new OI();
 
   /**
