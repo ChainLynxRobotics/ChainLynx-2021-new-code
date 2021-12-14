@@ -16,12 +16,16 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
  * the package after creating this project, you must also update the build.gradle file in the
  * project.
  */
+// when i was coding this class, i couldn't get robot container to work right so i decided to just not use it at least for this model
+// big note, this code can support simulation BUT it lacks odometry and i haven't accounted for encoders yet, because they are not on our robot
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
 
-  
-  public static DriveTrain driveTrain;
-  public static OI m_OI;
+  // the subsystems are declared here, and not in robotInit as you would assume to workaround the 
+  //fact that simulation periodic actucally runs BEFORE robotInit 
+  //so i had to declare them here to avoid a null pointer error
+  public static DriveTrain driveTrain = new DriveTrain();;
+  public static OI m_OI = new OI();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
@@ -29,15 +33,16 @@ public class Robot extends TimedRobot {
   
   @Override
   public void robotInit() {
-    // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
-    // autonomous chooser on the dashboard.
-    DriveTrain driveTrain = new DriveTrain();
-    OI m_OI = new OI();
+    // i did not code for the smart dashboard and also didn't code any autonomous code so i only have the drive command in here
+    //in the future this should be moved to teleop init, likely in a command form
+   
     driveTrain.drive(m_OI.getJoystickRawAxis(0), m_OI.getJoystickRawAxis(2));
 
   }
   @Override
   public void simulationPeriodic() {
+    // this is where you put code that needs to be periodically run for the simulation
+    //IMPORTANT NOTE: this code runs at least once before robotInit when simulating the code so make sure that if any methods need subsystems, they are called before robotInit
     double drawCurrent = driveTrain.getDrawnCurrentAmps();
     double loadedVoltage = BatterySim.calculateDefaultBatteryLoadedVoltage(drawCurrent);
     RoboRioSim.setVInVoltage(loadedVoltage);
@@ -56,19 +61,22 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    CommandScheduler.getInstance().run();
+    CommandScheduler.getInstance().run(); // this method is what causes commands to continue to run 
+    //if there is any issue in the code currently, its that driveTrain.drive likely isn't a command
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {CommandScheduler.getInstance().cancelAll();}
 
   @Override
   public void disabledPeriodic() {}
+  
+
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
-  @Override
-  public void autonomousInit() {
+  @Override // when we add autonomous code we should initialize it here
+  public void autonomousInit() { 
     /*m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     // schedule the autonomous command (example)
@@ -80,7 +88,10 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
+  public void autonomousPeriodic() {
+    // this should actually be empty unless we move the command schedueler out of robot periodic and into this and teleop periodic
+    // the reason we leave this part of the code empty, is the commands should handle the robots movement on their own, we just initialze that for autonomous
+  } 
 
   @Override
   public void teleopInit() {
@@ -91,11 +102,14 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
+    // here we would also initialize the teleop command but as i said that doesn't make sense with the current code makeup
   }
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {}
+  public void teleopPeriodic() {
+    // same as autonomous periodic
+  }
 
   @Override
   public void testInit() {
