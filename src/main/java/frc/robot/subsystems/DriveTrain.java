@@ -115,7 +115,5 @@ public class DriveTrain extends SubsystemBase {
 
   }
 
-  public void drive(double throttle, double turn) {
-    m_drive.arcadeDrive(throttle, turn, true);
-  }
+  
 }
