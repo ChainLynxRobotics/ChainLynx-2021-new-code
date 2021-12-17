@@ -105,7 +105,7 @@ public class DriveTrain extends SubsystemBase {
   // our drive command, this is what is called in robot.java
   // if this is not a command, it might be necessary to move this to a different command class where it is called by driveTrain
   public void drive(double throttle, double turn) {
-    m_drive.arcadeDrive(throttle, turn, true);
+    m_drive.arcadeDrive(turn,-throttle, true);
     
   }
   // this is necessary for a class in robot.java for the simulation

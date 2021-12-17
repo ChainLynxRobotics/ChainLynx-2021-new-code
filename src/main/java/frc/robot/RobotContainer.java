@@ -41,7 +41,7 @@ public class RobotContainer {
       new RunCommand(
           () ->
               driveTrain.drive(
-                  m_OI.getJoystickRawAxis(0), m_OI.getJoystickRawAxis(2)),driveTrain));
+                  m_OI.getJoystickRawAxis(0), m_OI.getJoystickRawAxis(1)),driveTrain));
   }
 
 
