@@ -41,7 +41,7 @@ public class Robot extends TimedRobot {
     //in the future this should be moved to teleop init, likely in a command form
     robotContainer = new RobotContainer();
     
-
+    setNetworkTablesFlushEnabled(true);
   }
   @Override
   public void simulationPeriodic() {

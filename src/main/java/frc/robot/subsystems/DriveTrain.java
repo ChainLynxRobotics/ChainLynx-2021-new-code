@@ -19,6 +19,7 @@ import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.SimulationConstants;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 
@@ -58,7 +59,7 @@ public class DriveTrain extends SubsystemBase {
     rightMotors.setInverted(RobotMap.RIGHT_SIDE_INVERTED);
     leftMotors.setInverted(RobotMap.LEFT_SIDE_INVERTED);
     m_drive = new DifferentialDrive(leftMotors, rightMotors);
-    m_drive.setRightSideInverted(false);
+    
     m_leftEncoder = 
     new Encoder(RobotMap.MOTOR_LEFT_MASTER_ID,RobotMap.MOTOR_LEFT_SLAVE_ID,RobotMap.LEFT_SIDE_INVERTED);
     m_rightEncoder = 
@@ -85,6 +86,7 @@ public class DriveTrain extends SubsystemBase {
       m_rightEncoderSim = new EncoderSim(m_rightEncoder);
       m_gyroSim = new ADXRS450_GyroSim(m_gyro);
       fieldSim = new Field2d();
+      SmartDashboard.putData("Field", fieldSim);
           // to edit the values of this part of code edit the constants is Constants.java
       }
   }
@@ -144,7 +146,7 @@ public class DriveTrain extends SubsystemBase {
   // our drive command, this is what is called in robot.java
   // if this is not a command, it might be necessary to move this to a different command class where it is called by driveTrain
   public void drive(double turn, double throttle) {
-    m_drive.arcadeDrive(-throttle,turn, true);
+    m_drive.arcadeDrive(turn,throttle, true);
     
   }
   // this is necessary for a class in robot.java for the simulation
