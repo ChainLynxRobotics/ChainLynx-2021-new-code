@@ -1,3 +1,5 @@
+
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -8,7 +10,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-import frc.robot.subsystems.DriveTrain;
+
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 
@@ -22,12 +24,11 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 // big note, this code can support simulation BUT it lacks odometry and i haven't accounted for encoders yet, because they are not on our robot
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
-
+  private RobotContainer robotContainer;
   // the subsystems are declared here, and not in robotInit as you would assume to workaround the 
   //fact that simulation periodic actucally runs BEFORE robotInit 
   //so i had to declare them here to avoid a null pointer error
-  public static DriveTrain driveTrain = new DriveTrain();;
-  public static OI m_OI = new OI();
+  
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -38,15 +39,15 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // i did not code for the smart dashboard and also didn't code any autonomous code so i only have the drive command in here
     //in the future this should be moved to teleop init, likely in a command form
-   
-    driveTrain.drive(m_OI.getJoystickRawAxis(0), m_OI.getJoystickRawAxis(2));
+    robotContainer = new RobotContainer();
+    
 
   }
   @Override
   public void simulationPeriodic() {
     // this is where you put code that needs to be periodically run for the simulation
     //IMPORTANT NOTE: this code runs at least once before robotInit when simulating the code so make sure that if any methods need subsystems, they are called before robotInit
-    double drawCurrent = driveTrain.getDrawnCurrentAmps();
+    double drawCurrent = robotContainer.getRobotDrive().getDrawnCurrentAmps();
     double loadedVoltage = BatterySim.calculateDefaultBatteryLoadedVoltage(drawCurrent);
     RoboRioSim.setVInVoltage(loadedVoltage);
   }

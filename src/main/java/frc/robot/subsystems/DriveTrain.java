@@ -4,17 +4,23 @@
 
 package frc.robot.subsystems;
 
-
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry; // i am very upset about the amount of effort it took me to get this single stupid import to work i hate my life life is suffering and pain
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.ADXRS450_Gyro;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.SimulationConstants;
-
-
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import edu.wpi.first.wpilibj.simulation.ADXRS450_GyroSim;
 
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 
@@ -26,12 +32,18 @@ public class DriveTrain extends SubsystemBase {
   public DifferentialDrivetrainSim m_drivetrainSimulator;
   private SpeedControllerGroup leftMotors;
   private SpeedControllerGroup rightMotors;
+  private final Encoder m_leftEncoder;
+  private final Encoder m_rightEncoder;
+  private final ADXRS450_Gyro m_gyro;
 
   
   
   private DifferentialDrive m_drive;
-  
-  
+  private EncoderSim m_leftEncoderSim;
+  private EncoderSim m_rightEncoderSim;
+  private Field2d fieldSim;
+  private ADXRS450_GyroSim m_gyroSim;
+  private final DifferentialDriveOdometry m_odometry;
 
   
   public DriveTrain() {
@@ -43,10 +55,20 @@ public class DriveTrain extends SubsystemBase {
     
     leftMotors = new SpeedControllerGroup(m_leftDriveFront, m_leftDriveBack);
     rightMotors = new SpeedControllerGroup(m_rightDriveFront, m_rightDriveBack);
-    rightMotors.setInverted(true);
+    rightMotors.setInverted(RobotMap.RIGHT_SIDE_INVERTED);
+    leftMotors.setInverted(RobotMap.LEFT_SIDE_INVERTED);
     m_drive = new DifferentialDrive(leftMotors, rightMotors);
     m_drive.setRightSideInverted(false);
-    // this code basically assigns motor controllers to variables, then groups for the sides, then the drivetrain 
+    m_leftEncoder = 
+    new Encoder(RobotMap.MOTOR_LEFT_MASTER_ID,RobotMap.MOTOR_LEFT_SLAVE_ID,RobotMap.LEFT_SIDE_INVERTED);
+    m_rightEncoder = 
+    new Encoder(RobotMap.MOTOR_RIGHT_MASTER_ID,RobotMap.MOTOR_RIGHT_SLAVE_ID,RobotMap.RIGHT_SIDE_INVERTED);
+    m_leftEncoder.setDistancePerPulse(DriveConstants.ENCODER_PULSE_DISTANCE);
+    m_rightEncoder.setDistancePerPulse(DriveConstants.ENCODER_PULSE_DISTANCE);
+    m_gyro = new ADXRS450_Gyro();
+    resetEncoders();
+    m_odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+    // this code basically assigns motor controllers to variables, then groups for the sides, then the drivetrain and assigns values to our encoders
     // also inverts the right side to make sure the motor moves straight
     if (RobotBase.isSimulation()) { // If our robot is simulated
       // This class simulates our drivetrain's motion around the field.
@@ -59,17 +81,15 @@ public class DriveTrain extends SubsystemBase {
             SimulationConstants.WHEEL_RADIUS,
             SimulationConstants.TRACK_WIDTH,
             SimulationConstants.MEASUREMENT_NOISE);
-
+      m_leftEncoderSim = new EncoderSim(m_leftEncoder);
+      m_rightEncoderSim = new EncoderSim(m_rightEncoder);
+      m_gyroSim = new ADXRS450_GyroSim(m_gyro);
+      fieldSim = new Field2d();
           // to edit the values of this part of code edit the constants is Constants.java
       }
   }
 
-      // class that doesn't work but might be important later
-  public void setDefaultCommand(){
-
-  }
-
-
+  
 
 
       @Override
@@ -82,17 +102,21 @@ public class DriveTrain extends SubsystemBase {
             leftMotors.get() * RobotController.getBatteryVoltage(),
             -rightMotors.get() * RobotController.getBatteryVoltage());
         m_drivetrainSimulator.update(0.020);
-
+        m_leftEncoderSim.setDistance(m_drivetrainSimulator.getLeftPositionMeters());
+        m_leftEncoderSim.setRate(m_drivetrainSimulator.getLeftVelocityMetersPerSecond());
+        m_rightEncoderSim.setDistance(m_drivetrainSimulator.getRightPositionMeters());
+        m_rightEncoderSim.setRate(m_drivetrainSimulator.getRightVelocityMetersPerSecond());
+        m_gyroSim.setAngle(-m_drivetrainSimulator.getHeading().getDegrees());
         //  note, the code that these are using may involve a drive function that controls the speed of the motors using volts directly
         // also only important for simulation so only look at this if you are having issues with simulation results
       }
      
 
+      
+      
 
 
-
-
-
+    
 
 
   
@@ -100,12 +124,27 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // if i remember correctly nothing has to be in here but i think it has something to do with the simulation so don't touch it for now
+    m_odometry.update(
+        Rotation2d.fromDegrees(getHeading()),
+        m_leftEncoder.getDistance(),
+        m_rightEncoder.getDistance());
+    fieldSim.setRobotPose(getPose());
+  }
+  
+  
+  public void zeroHeading() {
+    m_gyro.reset();
+  }
+  public void resetOdometry(Pose2d pose) {
+    resetEncoders();
+    m_drivetrainSimulator.setPose(pose);
+    m_odometry.resetPosition(pose, Rotation2d.fromDegrees(getHeading()));
   }
   
   // our drive command, this is what is called in robot.java
   // if this is not a command, it might be necessary to move this to a different command class where it is called by driveTrain
-  public void drive(double throttle, double turn) {
-    m_drive.arcadeDrive(throttle, turn, true);
+  public void drive(double turn, double throttle) {
+    m_drive.arcadeDrive(-throttle,turn, true);
     
   }
   // this is necessary for a class in robot.java for the simulation
@@ -114,8 +153,19 @@ public class DriveTrain extends SubsystemBase {
     return m_drivetrainSimulator.getCurrentDrawAmps();
 
   }
-
-  public void drive(double throttle, double turn) {
-    m_drive.arcadeDrive(throttle, turn, true);
+  public double getAverageEncoderDistance() {
+    return (m_leftEncoder.getDistance() + m_rightEncoder.getDistance()) / 2.0;
   }
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
+  }
+  public void resetEncoders() {
+    m_leftEncoder.reset();
+    m_rightEncoder.reset();
+  }
+  public double getHeading() {
+    return Math.IEEEremainder(m_gyro.getAngle(), 360) * (SimulationConstants.SIM_GYRO_INVERTED ? -1.0 : 1.0);
+  }
+
+  
 }

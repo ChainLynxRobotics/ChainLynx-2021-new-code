@@ -27,11 +27,12 @@ public final class Constants {
         //these ID's are accurate to the old robot, not the 2022 robot
 
 
-        public static final int MOTOR_LEFT_MASTER_ID = 1;
+        public static final int MOTOR_LEFT_MASTER_ID = 1; //motor port values are the same as encoder port values
         public static final int MOTOR_LEFT_SLAVE_ID = 2;
         public static final int MOTOR_RIGHT_MASTER_ID = 4;
         public static final int MOTOR_RIGHT_SLAVE_ID = 3;
-
+        public static final boolean LEFT_SIDE_INVERTED = false;
+        public static final boolean RIGHT_SIDE_INVERTED = true;
 
         // joystick port, may change if there is a mouse or something plugged in, be careful about that
 
@@ -52,6 +53,19 @@ public final class Constants {
 	   public static final double WHEEL_RADIUS = Units.inchesToMeters(3); //our wheels have a radius of 3 inches
 	   public static final double TRACK_WIDTH = .58; // there are .58 meters between the left and right wheels
 	   public static final Matrix<N7, N1> MEASUREMENT_NOISE = null; // this is for measurement noise so important if we want to be really accurate in our simulations
+      
+      
+      
+      
+      public static final boolean SIM_GYRO_INVERTED = true; // this is here because i am not sure if we will get a real gyro or what will happen to any gyro in the simulation
+
+
+   }
+   public static final class DriveConstants{
+
+   
+   public static final double ENCODER_CPR = 1024; // this is just a placeholder value; value subject to change
+   public static final double ENCODER_PULSE_DISTANCE = (SimulationConstants.WHEEL_RADIUS * Math.PI / ENCODER_CPR);
 
 
 
