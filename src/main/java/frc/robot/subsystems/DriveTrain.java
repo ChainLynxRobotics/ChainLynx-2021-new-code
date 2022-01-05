@@ -126,11 +126,13 @@ public class DriveTrain extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     // if i remember correctly nothing has to be in here but i think it has something to do with the simulation so don't touch it for now
-    m_odometry.update(
-        Rotation2d.fromDegrees(getHeading()),
-        m_leftEncoder.getDistance(),
-        m_rightEncoder.getDistance());
-    fieldSim.setRobotPose(getPose());
+    if (RobotBase.isSimulation()) {  m_odometry.update(
+          Rotation2d.fromDegrees(getHeading()),
+          m_leftEncoder.getDistance(),
+          m_rightEncoder.getDistance());
+      fieldSim.setRobotPose(getPose());
+      
+    }
   }
   
   
@@ -146,7 +148,7 @@ public class DriveTrain extends SubsystemBase {
   // our drive command, this is what is called in robot.java
   // if this is not a command, it might be necessary to move this to a different command class where it is called by driveTrain
   public void drive(double turn, double throttle) {
-    m_drive.arcadeDrive(turn,throttle, true);
+    m_drive.arcadeDrive(-turn,throttle, true);
     
   }
   // this is necessary for a class in robot.java for the simulation

@@ -36,7 +36,8 @@ public final class Constants {
 
         // joystick port, may change if there is a mouse or something plugged in, be careful about that
 
-        public static final int JOYSTICK_PORT = 0;
+        public static final int JOYSTICK_PORT1 = 0;
+	     public static final int JOYSTICK_PORT2 = 1;
 
 
 
