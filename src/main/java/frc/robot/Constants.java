@@ -37,7 +37,11 @@ public final class Constants {
         // joystick port, may change if there is a mouse or something plugged in, be careful about that
 
         public static final int JOYSTICK_PORT1 = 0;
-	     public static final int JOYSTICK_PORT2 = 1;
+        public static final int JOYSTICK_PORT2 = 1;
+        
+        public static final int JOYSTICK_TURN_AXIS = 0;
+        public static final int JOYSTICK_THROTTLE_AXIS = 1;
+        public static final int JOYSTICK_SCALE_AXIS = 2; // note that this should be changed to 3 for any testing with the right handed controller
 
 
 

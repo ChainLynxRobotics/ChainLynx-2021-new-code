@@ -151,6 +151,9 @@ public class DriveTrain extends SubsystemBase {
     m_drive.arcadeDrive(-turn,throttle, true);
     
   }
+  public void controlDrive(double leftSpeed, double rightSpeed){
+    m_drive.tankDrive(leftSpeed, rightSpeed);
+  }
   // this is necessary for a class in robot.java for the simulation
   // this is not important in any way outside of the simulation
   public double getDrawnCurrentAmps() {

@@ -2,7 +2,6 @@
 // we will probobly use this during the competion season to help signifigantly with organizing our subsystems and code in general
 // but for now at least for demonstation purposes we will not use this class
 
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -10,10 +9,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.XboxController;
-
+import edu.wpi.first.wpilibj2.command.Command;
 //import edu.wpi.first.wpilibj2.command.Command; // unused import, will use later
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import frc.robot.Constants.RobotMap;
+import frc.robot.commands.Drive;
 import frc.robot.subsystems.DriveTrain;
 
 /**
@@ -41,8 +41,9 @@ public class RobotContainer {
       new RunCommand(
           () ->
               driveTrain.drive(
-                  m_OI.getJoystick1RawAxis(1),m_OI.getJoystick1RawAxis(0) ),driveTrain));
-  }
+                  m_OI.getJoystick1RawAxis(RobotMap.JOYSTICK_THROTTLE_AXIS)*m_OI.getJoystick1RawAxis(RobotMap.JOYSTICK_SCALE_AXIS),
+                  m_OI.getJoystick1RawAxis(RobotMap.JOYSTICK_TURN_AXIS)),driveTrain));
+  } // maybe break up a joystick values into a method at some point, also clean up this disgusting lambda
 
 
   /**
@@ -61,10 +62,11 @@ public class RobotContainer {
   public DriveTrain getRobotDrive() {
     return driveTrain;
   }
- /**  public Command getAutonomousCommand() {
+  public Command getAutonomousCommand() {
     // An ExampleCommand will run in autonomous
-    return m_autoCommand;
+    
+	return new Drive(driveTrain, .5, .5).withTimeout(4);
   }
-  */
+
 }
 
