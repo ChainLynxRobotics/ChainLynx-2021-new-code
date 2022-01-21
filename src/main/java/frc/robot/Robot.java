@@ -121,9 +121,9 @@ public class Robot extends TimedRobot {
     // same as autonomous periodic
     
     // Intake Control
-    if (driveStick.getRawButton(Constants.intakeInButton)) {
+    if (driveStick.getRawButton(Constants.INTAKEINBUTTON)) {
       intake.setPower(1); // Placeholder power value
-    } else if (driveStick.getRawButton(Constants.intakeOutButton)) {
+    } else if (driveStick.getRawButton(Constants.INTAKEOUTBUTTON)) {
       intake.setPower(-1); // Placeholder power value
     } else {
       intake.setPower(0);
