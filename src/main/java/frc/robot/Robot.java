@@ -34,8 +34,7 @@ public class Robot extends TimedRobot {
   private IntakeSubsystem intake = new IntakeSubsystem();
   
   
-  // Value is if we are assuming we are still using the same joystick as 2020
-  private Joystick driveStick = new Joystick(0);
+  private Joystick driveStick = new Joystick(Constants.JOYSTICK_PORT);
 
   /**
    * This function is run when the robot is first started up and should be used for any
