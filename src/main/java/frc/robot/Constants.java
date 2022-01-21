@@ -36,10 +36,10 @@ public final class Constants {
         // joystick port, may change if there is a mouse or something plugged in, be careful about that
 
         public static final int JOYSTICK_PORT = 0;
+	
 
-
-
-
+	//used in shooter subsystem
+	public static final double velocity = 20; //placeholder value; 
 
    }
    public static final class SimulationConstants{
