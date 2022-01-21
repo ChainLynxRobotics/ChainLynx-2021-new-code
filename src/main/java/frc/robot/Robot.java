@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj.simulation.BatterySim;
 import edu.wpi.first.wpilibj.simulation.RoboRioSim;
 
+import frc.robot.subsytems.IntakeSubsystem;
+
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
  * each mode, as described in the TimedRobot documentation. If you change the name of this class or
@@ -22,13 +24,18 @@ import edu.wpi.first.wpilibj.simulation.RoboRioSim;
  */
 // when i was coding this class, i couldn't get robot container to work right so i decided to just not use it at least for this model
 // big note, this code can support simulation BUT it lacks odometry and i haven't accounted for encoders yet, because they are not on our robot
+
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private RobotContainer robotContainer;
   // the subsystems are declared here, and not in robotInit as you would assume to workaround the 
   //fact that simulation periodic actucally runs BEFORE robotInit 
   //so i had to declare them here to avoid a null pointer error
+  private IntakeSubsystem intake = new IntakeSubsystem();
   
+  
+  // Value is if we are assuming we are still using the same joystick as 2020
+  private Joystick driveStick = new Joystick(0);
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -113,6 +120,15 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // same as autonomous periodic
+    
+    // Intake Control
+    if (driveStick.getRawButton(Constants.intakeInButton)) {
+      intake.setPower(1); // Placeholder power value
+    } else if (driveStick.getRawButton(Constants.intakeOutButton)) {
+      intake.setPower(-1); // Placeholder power value
+    } else {
+      intake.setPower(0);
+    }
   }
 
   @Override
