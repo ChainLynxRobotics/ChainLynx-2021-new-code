@@ -39,7 +39,7 @@ public final class Constants {
 	
 
 	//used in shooter subsystem
-	public static final double velocity = 20; //placeholder value; 
+	public static final double velocity = 20; //placeholder value
 
    }
    public static final class SimulationConstants{
