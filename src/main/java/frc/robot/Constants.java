@@ -36,10 +36,16 @@ public final class Constants {
         // joystick port, may change if there is a mouse or something plugged in, be careful about that
 
         public static final int JOYSTICK_PORT = 0;
+	   
+	   
+	// Joystick buttons used for the intake subsystem
+	
+	public static final int INTAKEINBUTTON = 4;  // These values are from the 2020 robot
+	public static final int INTAKEOUTBUTTON = 5;
+	
 
-
-
-
+	//used in shooter subsystem
+	public static final double velocity = 20; //placeholder value
 
    }
    public static final class SimulationConstants{
