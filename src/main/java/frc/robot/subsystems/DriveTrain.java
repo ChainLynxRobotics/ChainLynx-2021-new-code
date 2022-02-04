@@ -12,8 +12,8 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 import frc.robot.Constants.SimulationConstants;
-
-
+import com.analog.adis16448.frc.ADIS16448_IMU;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
@@ -26,16 +26,16 @@ public class DriveTrain extends SubsystemBase {
   public DifferentialDrivetrainSim m_drivetrainSimulator;
   private SpeedControllerGroup leftMotors;
   private SpeedControllerGroup rightMotors;
-
-  
+  private ADIS16448_IMU gyro;
+  private Boolean breakStatus;
   
   private DifferentialDrive m_drive;
   
-  
+
 
   
   public DriveTrain() {
-    
+    breakStatus = false;
     m_leftDriveFront = new WPI_VictorSPX(RobotMap.MOTOR_LEFT_MASTER_ID );
     m_leftDriveBack= new WPI_VictorSPX(RobotMap.MOTOR_LEFT_SLAVE_ID );
     m_rightDriveFront= new WPI_VictorSPX(RobotMap.MOTOR_RIGHT_MASTER_ID );
@@ -46,6 +46,7 @@ public class DriveTrain extends SubsystemBase {
     rightMotors.setInverted(true);
     m_drive = new DifferentialDrive(leftMotors, rightMotors);
     m_drive.setRightSideInverted(false);
+    gyro = new ADIS16448_IMU();
     // this code basically assigns motor controllers to variables, then groups for the sides, then the drivetrain 
     // also inverts the right side to make sure the motor moves straight
     if (RobotBase.isSimulation()) { // If our robot is simulated
@@ -62,11 +63,6 @@ public class DriveTrain extends SubsystemBase {
 
           // to edit the values of this part of code edit the constants is Constants.java
       }
-  }
-
-      // class that doesn't work but might be important later
-  public void setDefaultCommand(){
-
   }
 
 
@@ -89,8 +85,25 @@ public class DriveTrain extends SubsystemBase {
      
 
       
-      
+  // method to set the status of the break, really ineffiecient right now, will improve at some point
+  public void setBreakStatus(boolean breakOn){
+    if (breakOn != breakStatus && breakOn == true){
+      m_leftDriveFront.setNeutralMode(NeutralMode.Brake);
+      m_leftDriveBack.setNeutralMode(NeutralMode.Brake);
+      m_rightDriveFront.setNeutralMode(NeutralMode.Brake);
+      m_rightDriveBack.setNeutralMode(NeutralMode.Brake);
+    }
+    else if(breakOn != breakStatus && breakOn == false){
+      m_leftDriveFront.setNeutralMode(NeutralMode.Coast);
+      m_leftDriveBack.setNeutralMode(NeutralMode.Coast);
+      m_rightDriveFront.setNeutralMode(NeutralMode.Coast);
+      m_rightDriveBack.setNeutralMode(NeutralMode.Coast);
 
+    }
+
+    
+
+  }
 
 
 
@@ -114,6 +127,8 @@ public class DriveTrain extends SubsystemBase {
     return m_drivetrainSimulator.getCurrentDrawAmps();
 
   }
-
+  public double getGyroOutput(){
+    return gyro.getGyroAngleZ();
+  }
   
 }

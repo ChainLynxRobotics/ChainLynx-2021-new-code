@@ -6,10 +6,14 @@ import edu.wpi.first.wpilibj.Joystick;
 import frc.robot.Constants.RobotMap;
 
 public class OI {
-    private Joystick driveStick = new Joystick(RobotMap.JOYSTICK_PORT);
+    private Joystick driveStick = new Joystick(RobotMap.JOYSTICK1_PORT);
 
-    public double getJoystickRawAxis(int axis){
+    public double getJoystick1RawAxis(int axis){
         return driveStick.getRawAxis(axis);
+    }
+    private Joystick operatorStick = new Joystick(RobotMap.JOYSTICK2_PORT);
+    public double getJoystick2RawAxis(int axis){
+        return operatorStick.getRawAxis(axis);
     }
   
 }

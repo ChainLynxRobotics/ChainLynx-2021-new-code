@@ -1,11 +1,11 @@
 
-
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -41,7 +41,8 @@ public class Robot extends TimedRobot {
     //in the future this should be moved to teleop init, likely in a command form
     robotContainer = new RobotContainer();
     
-
+    CameraServer.getInstance().startAutomaticCapture();
+    
   }
   @Override
   public void simulationPeriodic() {
@@ -67,11 +68,15 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run(); // this method is what causes commands to continue to run 
     //if there is any issue in the code currently, its that driveTrain.drive likely isn't a command
+    robotContainer.displayGyro();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {CommandScheduler.getInstance().cancelAll();}
+  public void disabledInit() {CommandScheduler.getInstance().cancelAll();
+  robotContainer.getRobotDrive().setBreakStatus(true);
+  // breaks will automatically be turned off when drive starts up again
+  }
 
   @Override
   public void disabledPeriodic() {}
